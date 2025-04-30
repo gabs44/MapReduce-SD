@@ -36,5 +36,5 @@ while True:
         for key, values in reduced_data.items():
             output_file.write(f'{values} palavras começam com a letra {key}\n')
 
-    r.publish('reducer_finished_task', 'ok')
+    r.lpush('reducer_finished_task', reducer_number)
 

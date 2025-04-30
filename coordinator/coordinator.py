@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from redis_connection import r
 from shuffler import shuffle
+import time
 
 
 # adicionado para saber que os workers do docker estão prontos
@@ -33,8 +34,16 @@ for mensagem in pubsub.listen():
         break
 
 
-shuffle()
+# adicionado para saber que os workers do docker estão prontos
+count_mappers = int(os.getenv('NUM_REDUCERS', 1))
+path = 'output'
+while True:
+    files = os.listdir(path)
+    if len(files)==count_mappers:
+        break
 
+
+shuffle()
 
 path = 'shuffled'
 files = os.listdir(path)
@@ -44,16 +53,10 @@ for file in files:
     r.lpush('reduce_queue', f'reduce {file}')
 
 contador = len(files)
+for _ in range(contador):
+    r.brpop('reducer_finished_task')
 
-pubsub.subscribe('reducer_finished_task')
-for mensagem in pubsub.listen():
-    if mensagem['type'] == 'message':
-        contador -= 1
-    if contador==0:
-        break
-
-
-with open('final_result.txt', 'w', encoding='utf-8') as outfile:
+with open('final_result.txt', 'w+', encoding='utf-8') as outfile:
     for i in range(len(files)):
         print(i)
         with open(os.path.join('output', f'reducer{i}_output.txt'), 'r', encoding='utf-8') as infile:

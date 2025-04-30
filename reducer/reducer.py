@@ -1,8 +1,11 @@
 import time
-import datetime
-from redis_connection import r
-import os
 import json
+import datetime
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from redis_connection import r
 
 # Cria os arquivos intermediários na inicialização do worker
 path = 'output'
@@ -30,7 +33,8 @@ while True:
         reduced_data[key] = reducer_function(values)
 
     with open(output_filename, 'w+', encoding="utf-8") as output_file:
-        json.dump(reduced_data, output_file)
+        for key, values in reduced_data.items():
+            output_file.write(f'{values} palavras começam com a letra {key}\n')
 
     r.publish('reducer_finished_task', 'ok')
 

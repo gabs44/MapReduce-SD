@@ -5,6 +5,7 @@ import json
 path = 'output'
 files = os.listdir(path)
 R = len(files)
+print(R)
 
 def shuffle():
     grouped = {}

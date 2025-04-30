@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
   redis:
@@ -6,4 +6,33 @@ services:
     container_name: redis-local
     ports:
       - "6379:6379"
-    restart: unless-stopped
+
+  mapper:
+    build: ./mapper
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    deploy:
+      replicas: 8
+
+  reducer:
+    build: ./reducer
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+    deploy:
+      replicas: 4
+  
+  coordinator:
+    build: ./coordinator
+    depends_on:
+      - redis
+      - reducer
+      - mapper
+    volumes:
+      - .:/app
+    environment:
+      - NUM_MAPPERS=8
+      - NUM_REDUCERS=4

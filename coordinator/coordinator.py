@@ -1,6 +1,18 @@
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from redis_connection import r
 from shuffler import shuffle
+
+
+# adicionado para saber que os workers do docker estão prontos
+count_mappers = int(os.getenv('NUM_MAPPERS', 1))
+path = 'intermediate'
+while True:
+    files = os.listdir(path)
+    if len(files)==count_mappers:
+        break
 
 path = 'chunks'
 files = os.listdir(path)
@@ -22,7 +34,6 @@ for mensagem in pubsub.listen():
 
 
 shuffle()
-
 
 
 path = 'shuffled'

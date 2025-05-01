@@ -46,7 +46,7 @@ O sistema é dividido em 4 fases principais:
   - Lerá um dos arquivos divididos (`chunk*.txt`) por tarefa recebida.
   - Para cada palavra, identifica a **letra inicial (sem acento)**.
   - Emite pares `(letra, 1)` para cada ocorrência.
-  - Salva os resultados em arquivos intermediários `intermediate*.json`.
+  - Salva os resultados em arquivos intermediários `intermediate*.json` no diretório compartilhado `intermediate`.
   - Publica uma notificação de término no canal `mapper_finished_task`.
 
 
@@ -55,7 +55,7 @@ O sistema é dividido em 4 fases principais:
 - Ao ser executado, o `shuffler.py` será responsável por:
   - Ler todos os arquivos intermediários.
   - Agrupar todos os valores pelo mesmo caractere (letra inicial).
-  - Distribuir os dados agrupados entre os reducers usando `hash(letra) % R`, gerando arquivos `reducer*_input.json`.
+  - Distribuir os dados agrupados entre os reducers usando `hash(letra) % R`, gerando arquivos `reducer*_input.json` no diretório compartilhado `shuffled`.
 
 ### 3. Reduce (Redução)
 
@@ -73,6 +73,7 @@ O sistema é dividido em 4 fases principais:
 
 ### 4. Coordenador
 
+O `cordinator.py`é o arquivo responsável por coordenar as tarefas e invocar os métodos necessários ao longo do processamento. Em ordem, ele:
 - Verifica se os map workers estão prontos.
 - Verifica quantos arquivos de chunk existem.
 - Dispara as tarefas na fila de `process_queue`.
@@ -80,7 +81,7 @@ O sistema é dividido em 4 fases principais:
 - Chamar o método shuffer para iniciar etapa de shuffer.
 - Enviar as tarefas para os reducers iniciarem.
 - O coordenador aguarda todos os reducers finalizarem.
-- Junta os arquivos `reducer*_output.txt` em um único resultado final: `final_result.txt`.
+- Junta os arquivos `reducer*_output.txt` em um único resultado final: `final_result.txt` na raiz do projeto.
 
 
 ## Resultado Final

@@ -71,7 +71,7 @@ O sistema é dividido em 4 fases principais:
 ...
 ```
 
-### 4. Coordenador
+### 4. Coordinator (Coordenação)
 
 O `cordinator.py`é o arquivo responsável por coordenar as tarefas e invocar os métodos necessários ao longo do processamento. Em ordem, ele:
 - Verifica se os map workers estão prontos.

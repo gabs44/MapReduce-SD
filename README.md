@@ -10,7 +10,7 @@
   - [1. Map (Mapeamento)](#1-map-mapeamento)
   - [2. Shuffle (Agrupamento)](#2-shuffle-agrupamento)
   - [3. Reduce (Redução)](#3-reduce-redução)
-  - [4. Coordenador](#4-coordenador)
+  - [4. Coordinator (Coordenação)](#4-coordinator-coordenação)
 - [Resultado Final](#resultado-final)
 - [docker-compose.yml](#docker-composeyml)
 - [clean.sh](#cleansh)
